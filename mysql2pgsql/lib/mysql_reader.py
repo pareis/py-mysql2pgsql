@@ -131,11 +131,11 @@ class MysqlReader(object):
                 precision_match = re_column_precision.search(res[1])
                 length = length_match.group(1) if length_match else \
                     precision_match.group(1) if precision_match else None
-                name = res[0]
+                name = res[0].lower()
                 field_type = self._convert_type(res[1])
                 desc = {
                     'name': name,
-                    'table_name': self.name,
+                    'table_name': self.name.lower(),
                     'type': field_type,
                     'length': int(length) if length else None,
                     'decimals': precision_match.group(2) if precision_match else None,

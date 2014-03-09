@@ -151,7 +151,7 @@ class PostgresDbWriter(PostgresWriter):
         """
         table_sql, serial_key_sql = super(PostgresDbWriter, self).write_table(table)
         for sql in serial_key_sql + table_sql:
-            self.execute(sql)
+            self.execute(sql.lower())
 
     @status_logger
     def write_indexes(self, table):
@@ -164,7 +164,7 @@ class PostgresDbWriter(PostgresWriter):
         """
         index_sql = super(PostgresDbWriter, self).write_indexes(table)
         for sql in index_sql:
-            self.execute(sql)
+            self.execute(sql.lower())
 
     @status_logger
     def write_triggers(self, table):
@@ -190,7 +190,7 @@ class PostgresDbWriter(PostgresWriter):
         """
         constraint_sql = super(PostgresDbWriter, self).write_constraints(table)
         for sql in constraint_sql:
-            self.execute(sql)
+            self.execute(sql.lower())
 
     @status_logger
     def write_contents(self, table, reader):
@@ -203,4 +203,4 @@ class PostgresDbWriter(PostgresWriter):
         Returns None
         """
         f = self.FileObjFaker(table, reader.read(table), self.process_row, self.verbose)
-        self.copy_from(f, '"%s"' % table.name, ['"%s"' % c['name'] for c in table.columns])
+        self.copy_from(f, '"%s"' % table.name.lower(), ['"%s"' % c['name'] for c in table.columns])
