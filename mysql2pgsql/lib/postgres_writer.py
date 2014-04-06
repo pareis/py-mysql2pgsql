@@ -149,8 +149,11 @@ class PostgresWriter(object):
             elif 'bit' in column_type:
                 row[index] = bin(ord(row[index]))[2:]
             elif column_type == 'boolean':
+		if row[index] not in (None, 0, 1, '\x00', '\x01'):
+                    print (column['name'], row[index])
                 # We got here because you used a tinyint(1), if you didn't want a bool, don't use that type
-                row[index] = 't' if row[index] not in (None, 0) else 'f' if row[index] == 0 else row[index]
+                row[index] = 't' if row[index] not in (None, 0, '\x00') or row[index] == '\x01' else 'f' if row[index] in (0, '\x00') else row[index]
+                #print row[index]
             elif isinstance(row[index], (str, unicode, basestring)):
                 if column_type == 'bytea':
                     row[index] = Binary(row[index]).getquoted()[1:-8] if row[index] else row[index]
